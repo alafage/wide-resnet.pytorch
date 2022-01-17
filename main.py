@@ -144,13 +144,12 @@ if use_cuda:
 criterion = nn.CrossEntropyLoss()
 
 # Training
-def train(epoch):
+def train(epoch, optimizer):
     net.train()
     net.training = True
     train_loss = 0
     correct = 0
     total = 0
-    optimizer = optim.SGD(net.parameters(), lr=cf.learning_rate(args.lr, epoch), momentum=0.9, weight_decay=5e-4)
 
     print('\n=> Training Epoch #%d, LR=%.4f' %(epoch, cf.learning_rate(args.lr, epoch)))
     for batch_idx, (inputs, targets) in enumerate(trainloader):
@@ -219,10 +218,11 @@ print('| Initial Learning Rate = ' + str(args.lr))
 print('| Optimizer = ' + str(optim_type))
 
 elapsed_time = 0
+optimizer = optim.SGD(net.parameters(), lr=cf.learning_rate(args.lr, epoch), momentum=0.9, weight_decay=5e-4)
 for epoch in range(start_epoch, start_epoch+num_epochs):
     start_time = time.time()
 
-    train(epoch)
+    train(epoch, optimizer)
     test(epoch)
 
     epoch_time = time.time() - start_time
